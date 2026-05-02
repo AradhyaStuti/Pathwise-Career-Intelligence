@@ -1,14 +1,47 @@
 import { createRequire } from 'module';
 import mammoth from 'mammoth';
+import synonymData from './synonyms.json' with { type: 'json' };
 
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
+
+// scanned PDFs come out empty from pdf-parse. fall back to tesseract.
+// it's slow (~5-15s/page) so we only kick in when there's basically no text.
+async function ocrPdf(buffer) {
+  const [{ default: pdf2img }, { createWorker }] = await Promise.all([
+    import('pdf-img-convert'),
+    import('tesseract.js'),
+  ]);
+  const pages = await pdf2img.convert(buffer, { width: 1500 });
+  const worker = await createWorker('eng');
+  try {
+    const out = [];
+    for (const img of pages) {
+      const { data } = await worker.recognize(Buffer.from(img));
+      if (data?.text) out.push(data.text);
+    }
+    return out.join('\n\n');
+  } finally {
+    await worker.terminate();
+  }
+}
 
 export async function extractText(buffer, mimetype, filename = '') {
   const name = filename.toLowerCase();
   if (mimetype === 'application/pdf' || name.endsWith('.pdf')) {
     const data = await pdfParse(buffer);
-    return data.text || '';
+    const text = (data.text || '').trim();
+    // pdf-parse returns empty/near-empty for image-only (scanned) PDFs
+    if (text.length < 50) {
+      try {
+        const ocrText = await ocrPdf(buffer);
+        if (ocrText.trim().length > text.length) return ocrText;
+      } catch (e) {
+        // ocr failed, return whatever pdf-parse had
+        console.warn('[parser] ocr fallback failed:', e.message);
+      }
+    }
+    return text;
   }
   if (
     mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
@@ -65,90 +98,10 @@ export function detectFormattingIssues(text) {
   return issues;
 }
 
-const SYNONYMS = {
-  js: 'javascript',
-  javascript: 'javascript',
-  ecmascript: 'javascript',
-  ts: 'typescript',
-  typescript: 'typescript',
-  reactjs: 'react',
-  'react.js': 'react',
-  react: 'react',
-  nextjs: 'next.js',
-  'next.js': 'next.js',
-  next: 'next.js',
-  nodejs: 'node.js',
-  'node.js': 'node.js',
-  node: 'node.js',
-  k8s: 'kubernetes',
-  kubernetes: 'kubernetes',
-  gcp: 'google cloud',
-  'google cloud platform': 'google cloud',
-  'google cloud': 'google cloud',
-  aws: 'aws',
-  'amazon web services': 'aws',
-  ml: 'machine learning',
-  'machine learning': 'machine learning',
-  ai: 'artificial intelligence',
-  'artificial intelligence': 'artificial intelligence',
-  nlp: 'natural language processing',
-  'natural language processing': 'natural language processing',
-  cv: 'computer vision',
-  'computer vision': 'computer vision',
-  'ci/cd': 'cicd',
-  cicd: 'cicd',
-  'ci-cd': 'cicd',
-  sql: 'sql',
-  postgres: 'postgresql',
-  postgresql: 'postgresql',
-  mongo: 'mongodb',
-  mongodb: 'mongodb',
-  mysql: 'mysql',
-  rest: 'rest api',
-  'rest api': 'rest api',
-  restful: 'rest api',
-  graphql: 'graphql',
-  tailwind: 'tailwind css',
-  tailwindcss: 'tailwind css',
-  'tailwind css': 'tailwind css',
-  'gh actions': 'github actions',
-  'github actions': 'github actions',
-  tf: 'tensorflow',
-  tensorflow: 'tensorflow',
-  pytorch: 'pytorch',
-  py: 'python',
-  python: 'python',
-  go: 'golang',
-  golang: 'golang',
-  cpp: 'c++',
-  'c++': 'c++',
-  csharp: 'c#',
-  'c#': 'c#',
-  'objective c': 'objective-c',
-  'objective-c': 'objective-c',
-  oop: 'object-oriented programming',
-  ds: 'data structures',
-  'data structures': 'data structures',
-  algo: 'algorithms',
-  algorithms: 'algorithms',
-  ds_algo: 'data structures and algorithms',
-  dsa: 'data structures and algorithms',
-  agile: 'agile',
-  scrum: 'scrum',
-  jira: 'jira',
-  figma: 'figma',
-  'unit test': 'unit testing',
-  'unit tests': 'unit testing',
-  'unit testing': 'unit testing',
-  tdd: 'test-driven development',
-  'test driven': 'test-driven development',
-  'test-driven': 'test-driven development',
-  ux: 'user experience',
-  ui: 'user interface',
-  saas: 'saas',
-  api: 'api',
-  apis: 'api',
-};
+// loaded from synonyms.json - drop the metadata key
+const SYNONYMS = Object.fromEntries(
+  Object.entries(synonymData).filter(([k]) => !k.startsWith('_'))
+);
 
 const STOPWORDS = new Set([
   'a', 'an', 'and', 'the', 'of', 'for', 'to', 'in', 'on', 'with', 'at', 'by', 'or', 'as', 'is', 'are',

@@ -1,0 +1,196 @@
+{
+  "_note": "skill aliases -> canonical name. seeded from devicons + roadmap.sh tags + stuff i kept seeing in resumes. keys are lowercase, the matcher already lowercases input. order doesn't really matter, i just add to the bottom when something new comes up.",
+
+  "react": "react",
+  "reactjs": "react",
+  "react.js": "react",
+
+  "js": "javascript",
+  "javascript": "javascript",
+  "ecmascript": "javascript",
+
+  "ts": "typescript",
+  "typescript": "typescript",
+
+  "node": "node.js",
+  "node.js": "node.js",
+  "nodejs": "node.js",
+
+  "next": "next.js",
+  "next.js": "next.js",
+  "nextjs": "next.js",
+
+  "express": "express",
+  "expressjs": "express",
+  "express.js": "express",
+
+  "tailwind": "tailwind css",
+  "tailwindcss": "tailwind css",
+  "tailwind css": "tailwind css",
+
+  "k8s": "kubernetes",
+  "kubernetes": "kubernetes",
+  "kube": "kubernetes",
+
+  "docker": "docker",
+
+  "aws": "aws",
+  "amazon web services": "aws",
+
+  "gcp": "google cloud",
+  "google cloud platform": "google cloud",
+  "google cloud": "google cloud",
+
+  "azure": "azure",
+  "ms azure": "azure",
+
+  "ml": "machine learning",
+  "machine learning": "machine learning",
+  "machine-learning": "machine learning",
+
+  "nlp": "natural language processing",
+  "natural language processing": "natural language processing",
+
+  "cv": "computer vision",
+  "computer vision": "computer vision",
+
+  "ai": "artificial intelligence",
+  "artificial intelligence": "artificial intelligence",
+
+  "ci/cd": "cicd",
+  "cicd": "cicd",
+  "ci-cd": "cicd",
+  "ci cd": "cicd",
+
+  "sql": "sql",
+
+  "postgres": "postgresql",
+  "postgresql": "postgresql",
+  "psql": "postgresql",
+
+  "mongo": "mongodb",
+  "mongodb": "mongodb",
+
+  "mysql": "mysql",
+
+  "redis": "redis",
+
+  "rest": "rest api",
+  "rest api": "rest api",
+  "restful": "rest api",
+  "restful api": "rest api",
+
+  "graphql": "graphql",
+  "gql": "graphql",
+
+  "py": "python",
+  "python": "python",
+  "python3": "python",
+
+  "go": "golang",
+  "golang": "golang",
+
+  "cpp": "c++",
+  "c++": "c++",
+
+  "csharp": "c#",
+  "c#": "c#",
+
+  "objective c": "objective-c",
+  "objective-c": "objective-c",
+
+  "rust": "rust",
+  "kotlin": "kotlin",
+  "swift": "swift",
+
+  "tf": "tensorflow",
+  "tensorflow": "tensorflow",
+  "pytorch": "pytorch",
+  "torch": "pytorch",
+
+  "oop": "object-oriented programming",
+
+  "ds": "data structures",
+  "data structures": "data structures",
+  "algo": "algorithms",
+  "algorithms": "algorithms",
+  "ds_algo": "data structures and algorithms",
+  "dsa": "data structures and algorithms",
+
+  "agile": "agile",
+  "scrum": "scrum",
+  "kanban": "kanban",
+
+  "jira": "jira",
+  "figma": "figma",
+
+  "unit test": "unit testing",
+  "unit tests": "unit testing",
+  "unit testing": "unit testing",
+  "tdd": "test-driven development",
+  "test driven": "test-driven development",
+  "test-driven": "test-driven development",
+
+  "ux": "user experience",
+  "ui": "user interface",
+  "ui/ux": "user interface",
+
+  "saas": "saas",
+  "api": "api",
+  "apis": "api",
+
+  "_added_later_genai": "added when i started seeing 'genai'/'genAI' keep showing up in 2024-2025 JDs",
+  "gen ai": "generative ai",
+  "genai": "generative ai",
+  "generative ai": "generative ai",
+  "llm": "large language models",
+  "llms": "large language models",
+  "large language models": "large language models",
+
+  "_added_later_more_frontend": "missed these the first pass, kept getting reports of bad matches",
+  "nuxt": "nuxt",
+  "nuxtjs": "nuxt",
+  "nuxt.js": "nuxt",
+  "bootstrap": "bootstrap",
+  "mui": "mui",
+  "material ui": "mui",
+  "chakra": "chakra ui",
+  "chakra ui": "chakra ui",
+
+  "_added_later_data": "data eng stack, came up when i added a few data roles",
+  "spark": "spark",
+  "hadoop": "hadoop",
+  "airflow": "airflow",
+  "dbt": "dbt",
+  "kafka": "kafka",
+  "rabbitmq": "rabbitmq",
+  "elasticsearch": "elasticsearch",
+  "es": "elasticsearch",
+  "opensearch": "elasticsearch",
+  "pandas": "pandas",
+  "numpy": "numpy",
+  "scikit-learn": "scikit-learn",
+  "sklearn": "scikit-learn",
+
+  "ruby": "ruby",
+  "rb": "ruby",
+  "rails": "ruby on rails",
+  "ruby on rails": "ruby on rails",
+  "ror": "ruby on rails",
+
+  "php": "php",
+  "laravel": "laravel",
+  ".net": "dotnet",
+  "dotnet": "dotnet",
+  "dot net": "dotnet",
+
+  "linux": "linux",
+  "bash": "bash",
+  "shell": "bash",
+
+  "gh actions": "github actions",
+  "github actions": "github actions",
+  "terraform": "terraform",
+  "ansible": "ansible",
+  "jenkins": "jenkins"
+}

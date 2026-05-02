@@ -22,10 +22,21 @@ import {
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
+// dumb in-memory cache for insights. role -> { data, exp }. ttl is 1h.
+// fine since insights barely change and the LLM call is the slow part.
+const insightsCache = new Map();
+const INSIGHTS_TTL_MS = 60 * 60 * 1000;
+
 router.get('/insights', authenticate, async (req, res, next) => {
   try {
     const role = z.string().min(2).max(100).parse(req.query.role);
+    const key = role.toLowerCase().trim();
+    const hit = insightsCache.get(key);
+    if (hit && hit.exp > Date.now()) {
+      return res.json(hit.data);
+    }
     const data = await getJobMarketInsights(role);
+    insightsCache.set(key, { data, exp: Date.now() + INSIGHTS_TTL_MS });
     res.json(data);
   } catch (e) {
     next(e);
@@ -122,9 +133,11 @@ router.post(
   }
 );
 
-// TODO paginate this if it ever gets slow
-router.get('/leaderboard', authenticate, async (_req, res, next) => {
+router.get('/leaderboard', authenticate, async (req, res, next) => {
   try {
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(50, Math.max(5, parseInt(req.query.limit, 10) || 20));
+
     const roadmaps = await Roadmap.find().populate('userId', 'name').lean({ virtuals: true });
     const byUser = new Map();
     for (const r of roadmaps) {
@@ -146,11 +159,15 @@ router.get('/leaderboard', authenticate, async (_req, res, next) => {
       cur.roadmaps += 1;
       byUser.set(uid, cur);
     }
-    const board = [...byUser.values()]
+    const ranked = [...byUser.values()]
       .map((u) => ({ ...u, pct: u.totalTasks ? Math.round((u.doneTasks / u.totalTasks) * 100) : 0 }))
-      .sort((a, b) => b.doneTasks - a.doneTasks)
-      .slice(0, 20);
-    res.json({ leaderboard: board });
+      .sort((a, b) => b.doneTasks - a.doneTasks);
+
+    const start = (page - 1) * limit;
+    const board = ranked.slice(start, start + limit);
+    const hasMore = start + limit < ranked.length;
+
+    res.json({ leaderboard: board, page, hasMore, total: ranked.length });
   } catch (e) {
     next(e);
   }

@@ -83,13 +83,13 @@ export default function Dashboard() {
     : 0;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <main className="mx-auto max-w-6xl px-4 pb-12 pt-6 md:pt-12">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Hi, {user?.name?.split(' ')[0] || 'there'}</h1>
-          <p className="mt-1 text-slate-600">Pick up where you left off.</p>
+          <h1 className="text-2xl font-bold sm:text-3xl">Hi, {user?.name?.split(' ')[0] || 'there'}</h1>
+          <p className="mt-1 text-sm text-slate-600 sm:text-base">Pick up where you left off.</p>
         </div>
-        <Link to="/onboarding" className="btn-primary self-start sm:self-auto">
+        <Link to="/onboarding" className="btn-primary self-start text-sm sm:self-auto sm:text-base">
           + New roadmap
         </Link>
       </div>
@@ -100,7 +100,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+      <div className="mt-6 grid gap-3 sm:gap-4 sm:grid-cols-2 md:grid-cols-4">
         {loading || !stats ? (
           <>
             <StatSkeleton />
@@ -139,7 +139,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="mt-10">
+      <div className="mt-8 md:mt-10">
         <h2 className="text-lg font-semibold text-slate-700">Your roadmaps</h2>
         {loading ? (
           <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -160,7 +160,7 @@ export default function Dashboard() {
         ) : (
           <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {roadmaps.map((r) => (
-              <div key={r._id} className="card-hover slide-up flex flex-col p-6">
+              <div key={r._id} className="card-hover slide-up flex flex-col p-5 sm:p-6">
                 <h3 className="text-lg font-semibold leading-snug">{r.title}</h3>
                 <p className="mt-1 text-sm text-slate-600">{r.targetRole}</p>
                 <div className="mt-4">

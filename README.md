@@ -61,3 +61,17 @@ npm run test:e2e  # full flow against a running server
 - JWT in httpOnly cookies for auth
 - Groq (primary), Gemini / Cerebras / OpenRouter as fallbacks when Groq rate-limits
 
+## Notes
+
+- `.env` is gitignored. Don't commit your keys.
+- Roadmap generation is rate-limited to 10/day per user.
+- Resume parser handles PDF/DOCX/TXT.
+
+## TODO / one day
+
+- ~~pagination on the leaderboard once there are more than ~50 users~~ done, simple page+limit
+- ~~cache market insights per role for like an hour, the LLM call is slow~~ done, in-memory map, 1h ttl
+- ~~image-only PDFs (scans) silently parse as empty — add an OCR fallback maybe~~ added tesseract fallback. slow but works
+- ~~the synonym list in parser.js is hand-maintained, would be nice to seed it from a real ontology~~ moved to `synonyms.json`, expanded a bit
+- ~~mobile dashboard is still a bit tight, fix later~~ tightened spacing
+- still need to look at the experience-years regex, it misses `Jan'22 - Dec'23` style

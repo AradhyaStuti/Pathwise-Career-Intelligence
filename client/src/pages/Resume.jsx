@@ -57,15 +57,6 @@ function SkillBlock({ title, matched, missing }) {
   );
 }
 
-const PROGRESS_STAGES = [
-  'Extracting resume text…',
-  'Parsing sections & contact info…',
-  'Analyzing job description…',
-  'Matching keywords…',
-  'Scoring against ATS rubric…',
-  'Finalizing report…',
-];
-
 export default function Resume() {
   const [jobDescription, setJobDescription] = useState('');
   const [file, setFile] = useState(null);
@@ -73,18 +64,8 @@ export default function Resume() {
   const [mode, setMode] = useState('upload');
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [stage, setStage] = useState(0);
   const [err, setErr] = useState('');
   const reportRef = useRef(null);
-
-  useEffect(() => {
-    if (!loading) return;
-    setStage(0);
-    const id = setInterval(() => {
-      setStage((s) => (s + 1) % PROGRESS_STAGES.length);
-    }, 3500);
-    return () => clearInterval(id);
-  }, [loading]);
 
   useEffect(() => {
     if (report && reportRef.current) {
@@ -136,9 +117,9 @@ export default function Resume() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-12">
       <div>
-        <h1 className="text-3xl font-bold">ATS Resume Scanner</h1>
+        <h1 className="text-3xl font-bold">ATS scan</h1>
         <p className="mt-1 text-slate-600">
-          Deterministic scoring engine — same resume, same score. Upload your resume and paste a job description.
+          Drop in a resume + JD. Score is computed in code so it doesn't drift between runs.
         </p>
       </div>
 
@@ -237,17 +218,17 @@ export default function Resume() {
         )}
 
         <button className="btn-primary w-full sm:w-auto" disabled={loading}>
-          {loading ? 'Scanning…' : 'Run ATS Scan'}
+          {loading ? 'Scanning…' : 'Scan resume'}
         </button>
 
         {loading && (
           <div className="fade-in rounded-lg border border-brand-200 bg-brand-50 p-4">
             <div className="flex items-center gap-3">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand-300 border-t-brand-600" />
-              <p className="text-sm font-medium text-brand-800">{PROGRESS_STAGES[stage]}</p>
+              <p className="text-sm font-medium text-brand-800">Scanning…</p>
             </div>
             <p className="mt-2 text-xs text-brand-700/80">
-              This usually takes 10–30 seconds. The AI is reading your resume against the JD.
+              Usually 10-30 seconds. Longer if it's a scanned PDF (OCR is slow).
             </p>
           </div>
         )}
@@ -312,9 +293,9 @@ export default function Resume() {
           </div>
 
           <div className="card p-6">
-            <h2 className="text-lg font-bold">Keyword match table</h2>
+            <h2 className="text-lg font-bold">Keyword match</h2>
             <p className="mt-1 text-xs text-slate-500">
-              Exact keywords from the JD that an ATS looks for.
+              These are the keywords the ATS will key on, pulled from the JD.
             </p>
             <div className="mt-4 max-h-96 overflow-auto scrollbar-thin">
               <table className="w-full text-sm">
@@ -358,7 +339,7 @@ export default function Resume() {
           </div>
 
           <div className="card p-6">
-            <h3 className="font-bold">Parsed resume signals</h3>
+            <h3 className="font-bold">What the parser saw</h3>
             <div className="mt-3 grid gap-4 text-sm md:grid-cols-2">
               <div>
                 <div className="text-xs font-semibold uppercase text-slate-500">Sections detected</div>
@@ -422,7 +403,7 @@ export default function Resume() {
           </div>
 
           <div className="card p-6">
-            <h3 className="font-bold">Top recommendations</h3>
+            <h3 className="font-bold">What to fix first</h3>
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
               {report.topRecommendations?.map((r, i) => (
                 <li key={i}>{r}</li>
@@ -432,8 +413,9 @@ export default function Resume() {
 
           {report.rewriteSummary && (
             <div className="card p-6">
-              <h3 className="font-bold">Suggested summary rewrite</h3>
-              <p className="mt-2 rounded-lg bg-slate-50 p-3 text-sm italic text-slate-700">
+              <h3 className="font-bold">Summary rewrite</h3>
+              <p className="mt-1 text-xs text-slate-500">A 3-line version tailored to this JD's wording. Steal what works.</p>
+              <p className="mt-3 rounded-lg bg-slate-50 p-3 text-sm italic text-slate-700">
                 {report.rewriteSummary}
               </p>
             </div>

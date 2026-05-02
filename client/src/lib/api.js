@@ -50,7 +50,7 @@ export const api = {
 
   insights: (role) => request(`/insights?role=${encodeURIComponent(role)}`, { timeoutMs: 90000 }),
   skillGap: (body) => request('/skill-gap', { method: 'POST', body, timeoutMs: 90000 }),
-  leaderboard: () => request('/leaderboard'),
+  leaderboard: (page = 1) => request(`/leaderboard?page=${page}`),
   stats: () => request('/stats'),
 
   scanResume: async (formData) => {

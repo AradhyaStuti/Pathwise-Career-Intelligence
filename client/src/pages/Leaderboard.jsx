@@ -25,14 +25,35 @@ export default function Leaderboard() {
   const [board, setBoard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     api
-      .leaderboard()
-      .then((d) => setBoard(d.leaderboard || []))
+      .leaderboard(1)
+      .then((d) => {
+        setBoard(d.leaderboard || []);
+        setHasMore(!!d.hasMore);
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
+
+  async function loadMore() {
+    setLoadingMore(true);
+    try {
+      const next = page + 1;
+      const d = await api.leaderboard(next);
+      setBoard((b) => [...b, ...(d.leaderboard || [])]);
+      setHasMore(!!d.hasMore);
+      setPage(next);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
@@ -103,6 +124,18 @@ export default function Leaderboard() {
               </tbody>
             </table>
           </div>
+
+          {hasMore && (
+            <div className="mt-6 flex justify-center">
+              <button
+                className="btn-ghost text-sm"
+                onClick={loadMore}
+                disabled={loadingMore}
+              >
+                {loadingMore ? 'Loading…' : 'Load more'}
+              </button>
+            </div>
+          )}
         </>
       )}
     </main>
