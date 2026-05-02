@@ -1,0 +1,7 @@
+{
+  "watch": ["src", ".env"],
+  "ext": "js,json,env",
+  "ignore": ["src/**/*.test.js", "test-e2e.js"],
+  "delay": 200,
+  "verbose": true
+}
